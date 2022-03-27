@@ -1,0 +1,210 @@
+swagger: "2.0"
+info:
+  description: This is the swagger file that goes with our server code
+  version: "1.0.0"
+  title: Cloud Computing Project Swagger
+consumes:
+  - application/json
+produces:
+  - application/json
+
+basePath: /api
+paths:
+  /cars/filtered:
+    get:
+      operationid: cars.read_filtered
+      tags: 
+        - Car
+      summary: Retrieves all cars filtered
+      parameters:
+          - name: region
+            type: string
+            in: query
+            description: Region of the car
+            required: False
+          - name: price
+            type: integer
+            in: query
+            description: Price of the car
+            required: False
+          - name: year
+            type: string
+            in: query
+            description: Year when car was manufactured
+            required: False
+          - name: manufacturer
+            type: string
+            in: query
+            description: who made the car
+            required: False
+          - name: model
+            type: string
+            in: query
+            description: Model of the car
+            required: False
+          - name: condition
+            type: string
+            in: query
+            description: car's condition
+            required: False
+      responses:
+          200:
+            description: Successfully read list of cars by a specific filter
+            schema:
+              type: array
+              items:
+                properties:
+                  region:
+                    type: string
+                  price:
+                    type: string
+                  year:
+                    type: string
+                  manufacturer:
+                    type: string
+                  model:
+                    type: string
+                  condition:
+                    type: string
+
+
+# Paths supported by the server application
+paths:
+  /cars:
+    get:
+      operationId: cars.read
+      tags:
+        - Car
+      summary: Retrieves all cars listed
+      description: Read the list of all cars containing only relevant information
+      responses:
+        200:
+          description: Successful 
+          schema:
+            type: array
+            items:
+              properties:
+                id:
+                  type: integer
+                postid:
+                  type: integer
+                region:
+                  type: string
+                price:
+                  type: string
+                year:
+                  type: string
+                manufacturer:
+                  type: string
+                model:
+                  type: string
+                condition:
+                  type: string
+                fuel:
+                  type: string
+                transmission:
+                  type: string
+                posting_date:
+                  type: string
+    
+    post:
+      operationId: cars.create
+      tags: 
+        - Car
+      summary: Created car listing
+      description: Create a new car listing
+      parameters:
+        - name: car
+          in: body
+          description: listing to create
+          required: True
+          schema:
+            type: object
+            description: the car's data
+            properties:
+              id:
+                type: integer
+              postid:
+                  type: integer
+              region:
+                type: string
+              price:
+                type: string
+              year:
+                type: string
+              manufacturer:
+                type: string
+              model:
+                type: string
+              condition:
+                type: string
+              fuel:
+                type: string
+              transmission:
+                type: string
+              posting_date:
+                type: string
+      responses:
+        201:
+          description: Successfully created a car listing
+          schema:
+            type: integer
+
+  /cars/{id}:
+    get:
+      operationId: cars.read_one
+      tags:
+        - Car
+      summary: The information corresponding to one car
+      description: All information from the given car
+      parameters:
+        - name: id 
+          in: path
+          description: Id of the required car
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successful 
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              postid:
+                  type: integer
+              region:
+                type: string
+              price:
+                type: string
+              year:
+                type: string
+              manufacturer:
+                type: string
+              model:
+                type: string
+              condition:
+                type: string
+              fuel:
+                type: string
+              transmission:
+                type: string
+              posting_date:
+                type: string
+
+    delete:
+      operationId: cars.delete
+      tags:
+        - Car
+      summary: Delete a car listing
+      description: Soft delete a car from the listing
+      parameters:
+        - name: id
+          in: path
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully deleted a listing
+
+ 
