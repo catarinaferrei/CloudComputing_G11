@@ -8,8 +8,10 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS user_preferences (
     preferences_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id INT,
-    color INT NOT NULL,
-    fuel INT NOT NULL,
-    transmission INT NOT NULL,
-    max_price INT NOT NULL
-);
+    color VARCHAR NULL,
+    fuel VARCHAR NULL,
+    transmission VARCHAR NULL,
+    max_price INT NULL,
+    year INT NULL,
+    manufacturer VARCHAR NULL
+    ) ;
