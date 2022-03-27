@@ -16,8 +16,6 @@ app = connexion.App(__name__, specification_dir="./")
 # read the swagger.yml file to configure the endpoints
 app.add_api("swagger.yaml")
 
-
-
 port=5004
 
 # Create a URL route in our application for "/"
@@ -31,7 +29,7 @@ def home():
     """
     data = make_response(json.dumps({"return": "OK"}))
     data.status_code = 200
-    return data, render_template('home.html')
+    return data
 
 
 if __name__ == "__main__":

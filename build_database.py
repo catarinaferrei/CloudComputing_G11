@@ -67,20 +67,10 @@ for car in CAR:
     price=car['price'],year=car['year'],manufacturer=car['manufacturer'],
     model=car['model'],condition=car['condition'],fuel=car['fuel'],transmission=car['transmission'],
     posting_date=car['posting_date'])
-    # Add the notes for the person
-    #for post in car.get("CarPost"):
-    #    postDate,postName = post
-    #    p.post.append(
-    #        CarPost(
-    #            postDate=postDate,
-    #            postName=postName)
-    #    )
+
+
     db.session.add(p) #commits Car object to db
     db.session.commit()
 
 
-#for post in CARPOST:
-    #cr = CarPost(CarPostid=post['CarPostid'], carId=post['carId'],
-    #postDate=post['postDate'])
-    #db.session.add(cr)
 
