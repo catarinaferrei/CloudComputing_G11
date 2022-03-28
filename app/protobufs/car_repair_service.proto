@@ -11,7 +11,6 @@ enum CarRepairStatus{
 
 message AddRequest {
     int32 car_id = 1;
-    CarStatus = 2;
 }
 
 message AddResponse {
@@ -24,13 +23,13 @@ message StatusRequest{
 }
 
 message StatusResponse{
-    CarRepairStatus = 1;
+    CarRepairStatus status = 1;
 }
 
 
 message StatusUpdateRequest{
     int32 car_id = 1;
-    CarRepairStatus = 2;
+    CarRepairStatus status = 2;
 }
 
 message StatusUpdateResponse{
