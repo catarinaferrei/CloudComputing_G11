@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+enum CarRepairStatus{
+    WAITING_CHECKUP = 0;
+    CHECKUP = 1;
+    WAITING_REPAIR = 2;
+}
+
+message AddRequest {
+    int32 car_id = 1;
+    CarStatus = 2;
+}
+
+message AddResponse {
+    int32 car_id = 1;
+}
+
+message StatusRequest{
+    int32 car_id = 1;
+}
+
+message StatusResponse{
+    CarRepairStatus = 1;
+}
+
+service CarRepairService {
+    rpc AddCar (AddRequest) returns (AddResponse);
+    rpc GetRepairStatus (StatusRequest) returns (StatusResponse);
+}
