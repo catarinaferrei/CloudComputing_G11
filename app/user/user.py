@@ -54,9 +54,9 @@ def update_user(id):
 
   if existingUser is not None:
     db.session.query(Users).filter_by(id=id).update(
-    dict(createUser(body))
+    dict(createUser(body)))
     db.session.query(UserPreferences).filter_by(user_id=id).update(
-    dict(createUserPreferences(body))
+    dict(createUserPreferences(body)))
     db.session.commit()
     return "user updated"
   else:
