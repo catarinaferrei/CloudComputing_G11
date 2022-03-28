@@ -6,6 +6,13 @@ from grpc_interceptor import ExceptionToStatusInterceptor
 from grpc_interceptor.exceptions import NotFound
 
 import car_repair_service_pb2_grpc
+from car_repair_service_pb2 import (
+    AddResponse,
+    StatusResponse,
+    CarRepairStatus,
+    StatusUpdateResponse,
+    DeleteRepairResponse
+)
 
 PORT = "5001"
 
@@ -21,11 +28,11 @@ class CarRepairService( ):
 
     def UpdateStatus ( self, request, context ):
         ##TODO: Update car status in database
-        return StatusUpdateResponse( car_id=1 ) )
+        return StatusUpdateResponse( car_id=1 ) 
 
     def Delete( self, request, context ):
         ##TODO: Delete car repair request
-        return DeleteRepairRespose( car_id=1 )
+        return DeleteRepairResponse( car_id=1 )
 
 
 ##__RUN__##
@@ -41,6 +48,7 @@ def serve():
 
     server.add_insecure_port("[::]:"+PORT)
     server.start()
+    print("Car_Repair_Service running on Port:"+PORT)
     server.wait_for_termination()
 
 
