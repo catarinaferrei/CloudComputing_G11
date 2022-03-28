@@ -12,31 +12,8 @@ from user_pb2 import (
     UserPreferencesResponse,
 )
 import user_pb2_grpc
-
-app = Flask(__name__)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-db = SQLAlchemy(app)
-
-class Users(db.Model):
-  user_id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(80), unique=False, nullable=False)
-  email = db.Column(db.String(120), unique=True, nullable=False)  
-  password = db.Column(db.String(120), unique=True, nullable=False)
-
-class UserPreferences(db.Model):
-  preferences_id = db.Column(db.Integer, primary_key=True)
-  user_id = db.Column(db.Integer,unique=True,nullable=False)
-  color = db.Column(db.String(80), unique=False, nullable=True)
-  fuel = db.Column(db.String(120), unique=False, nullable=True)  
-  transmission = db.Column(db.String(120), unique=False, nullable=True)
-  max_price = db.Column(db.Integer, unique=False, nullable=True)
-  year = db.Column(db.Integer, unique=False, nullable=True)
-  manufacturer = db.Column(db.String(120), unique=False, nullable=True)
-
-def __init__(self, title, content):
-    self.title = title
-    self.content = content 
+from models import Users,UserPreferences
+from config import db,app
 
 @app.route('/users/<id>', methods=['GET'])
 def get_user(id):
@@ -55,28 +32,73 @@ def get_users():
 @app.route('/users', methods=['POST'])
 def create_user():
   body = request.get_json()
-  db.session.add(Users(body['title'], body['content']))
-  db.session.commit()
-  return "user created"
+  existingUser = db.session.query(UserPreferences).filter_by(email=body['email']).one_or_none()
+
+  if existingUser is None:
+    db.session.add(createUser(body))
+    session.flush()
+
+    userPreferences = createUserPreferences(user_id,body)
+
+    db.session.add(userPreferences)
+    db.session.commit()    
+    return "user created"
+  else:
+    abort(409, f'User already exists')
 
 @app.route('/users/<id>', methods=['PUT'])
 def update_user(id):
   body = request.get_json()
-  db.session.query(Users).filter_by(id=id).update(
-    dict(title=body['title'], content=body['content']))
-  db.session.commit()
-  return "user updated"
+
+  existingUser = db.session.query(UserPreferences).filter_by(user_id=id).one_or_none()
+
+  if existingUser is not None:
+    db.session.query(Users).filter_by(id=id).update(
+    dict(createUser(body))
+    db.session.query(UserPreferences).filter_by(user_id=id).update(
+    dict(createUserPreferences(body))
+    db.session.commit()
+    return "user updated"
+  else:
+    abort(409, f'User doesnt exist')
+   
 
 @app.route('/users/<id>', methods=['DELETE'])
 def delete_user(id):
-  db.session.query(Users).filter_by(id=id).delete()
-  db.session.commit()
-  return "user deleted"
+  existingUser = db.session.query(UserPreferences).filter_by(user_id=body[id]).one_or_none()
+
+  if existingUser is not None:
+    db.session.query(UserPreferences).filter_by(user_id=id).delete()
+    db.session.query(Users).filter_by(id=id).delete()
+    db.session.commit()
+    return "user deleted"
+  else: 
+    abort(409, f'User doesnt exist')
 
 def get_user_preferences(id):
   user_preferences = db.session.query(UserPreferences).filter_by(user_id=id).first()
-  del user_preferences.__dict__['_sa_instance_state']
-  return jsonify(user_preferences.__dict__)
+  if user_preferences is not None:
+    del user_preferences.__dict__['_sa_instance_state']
+    return jsonify(user_preferences.__dict__)
+  else:
+    abort(409, f'User preferences dont exist')
+
+
+def createUser(body):
+  name = body['name']
+  email = body['email']
+  password = body['password']
+        
+  return Users(name,email,password)
+
+def createUserPreferences(user_id,body):
+  color = body['Preferences.color']
+  transmission = body['Preferences.transmission']
+  max_price = body['Preferences.max_price']
+  year = body['Preferences.year']
+  manufacturer = body['Preferences.manufacturer']
+        
+  return UserPreferences(user_id,color,transmission,max_price,year,manufacturer)
 
 class UserService(user_pb2_grpc.UsersServicer):
     def Preferences(self, request, context):
@@ -101,5 +123,5 @@ def serve():
 
 
 if __name__ == '__main__':
-  app.run(debug=True)
+  app.run()
   serve()
