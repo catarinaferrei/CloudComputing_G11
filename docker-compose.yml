@@ -1,24 +1,23 @@
-
 version: '3'
 
 services:
-  #userdb:
-  #  container_name: userdb
-  #  build: ./app/user/database
-  #  ports:
-  #    - "5432:5432"
+  userdb:
+    container_name: userdb
+    build: ./app/user/database
+    ports:
+      - "5432:5432"
       
-  #user:
-  #  container_name: user
-  #  image: user
-  #  build: ./app/user/
-  #  ports:
-  #    - "80:80"
-  #  environment:
-  #    - DATABASE_URL=postgresql://postgres:password@userdb:5432/usermanagement
-  #    - FLASK_APP=user
-  #  depends_on:
-  #    - userdb
+  user:
+    container_name: user
+    image: user
+    build: ./app/user/
+    ports:
+      - "80:80"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@userdb:5432/usermanagement
+      - FLASK_APP=user
+    depends_on:
+      - userdb
 
   recommendations:
     container_name: recommendations

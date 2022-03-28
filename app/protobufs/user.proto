@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+message UserRequest {
+    int32 user_id = 1;
+}
+
+message UserPreferences {
+    int32 id = 1;
+    string region = 2;
+    string price = 3;
+    string year = 4;
+    string manufacturer = 5;
+    string model = 6;
+    string condition = 7;
+    string fuel = 8;
+    string transmission = 9;
+    string posting_date = 10;
+}
+
+message UserPreferencesResponse {
+    UserPreferences preferences = 1;
+}
+
+service Users {
+    rpc Preferences (UserRequest) returns (UserPreferencesResponse);
+}
