@@ -7,20 +7,84 @@ from carsbd import Car, app
 from flask import jsonify, abort
 from config import db
 from car_pb2 import (
-    CarRequest,
+    CarDataList,
     CarDataResponse,
     CarData
 )
 import car_pb2_grpc
 
 def get_car_by_id(id):
- car = db.session.query(Car).filter_by(carid=id).first()
+ car = db.session.query(Car).filter_by(carid=id).limit(1)
  if car is not None:
     del car.__dict__['_sa_instance_state']
     #print(type(jsonify(car_list.__dict__)))
     return car_to_proto(car)
  else:
     abort(409, f'Car doesnt exist')
+
+def get_car_by_id_list(id):
+ car = db.session.query(Car).filter_by(carid=id)
+ if car is not None:
+    del car.__dict__['_sa_instance_state']
+    #print(type(jsonify(car_list.__dict__)))
+    return car_to_proto(car)
+ else:
+    abort(409, f'Car doesnt exist')
+
+def get_car_by_manufacturer(manufacturer):
+ car = db.session.query(Car).filter_by(manufacturer=manufacturer)
+ if car is not None:
+    del car.__dict__['_sa_instance_state']
+    #print(type(jsonify(car_list.__dict__)))
+    return car_to_proto(car)
+ else:
+    abort(409, f'Manufacturer doesnt exist')
+
+def get_car_by_price(price):
+ car = db.session.query(Car).filter_by(price=price)
+ if car is not None:
+    del car.__dict__['_sa_instance_state']
+    #print(type(jsonify(car_list.__dict__)))
+    return car_to_proto(car)
+ else:
+    abort(409, f'Manufacturer doesnt exist')
+
+def get_car_by_model(model):
+ car = db.session.query(Car).filter_by(model=model)
+ if car is not None:
+    del car.__dict__['_sa_instance_state']
+    #print(type(jsonify(car_list.__dict__)))
+    return car_to_proto(car)
+ else:
+    abort(409, f'Model doesnt exist')
+
+def get_car_by_region(region):
+    car = db.session.query(Car).filter_by(region=region)
+    if car is not None:
+        del car.__dict__['_sa_instance_state']
+    #print(type(jsonify(car_list.__dict__)))
+        return car_to_proto(car)
+    else:
+        abort(409, f'Model doesnt exist')
+
+def get_car_by_condition(condition):
+    car = db.session.query(Car).filter_by(condition=condition)
+    if car is not None:
+        del car.__dict__['_sa_instance_state']
+    #print(type(jsonify(car_list.__dict__)))
+        return car_to_proto(car)
+    else:
+        abort(409, f'condition doesnt exist')
+
+def get_car_by_year(year):
+    car = db.session.query(Car).filter_by(year=year)
+    if car is not None:
+        del car.__dict__['_sa_instance_state']
+    #print(type(jsonify(car_list.__dict__)))
+        return car_to_proto(car)
+    else:
+        abort(409, f'year doesnt exist')
+
 
 def car_to_proto(result):
     protocar = CarData (
@@ -60,6 +124,66 @@ class CarService(car_pb2_grpc.CarServicer):
             raise NotFound("car not found")
 
         return CarDataResponse(cars=car_data)
+    def SearchById(self, request):
+        """
+    Args:
+        param_init: car_id
+        returns: returns a list of the car corresponding to car_id
+        
+        """
+        car_data = get_car_by_id_list(request.car_id) 
+        if car_data is None:
+            raise NotFound("car not found")
+
+        return CarDataList(cars=car_data)
+    def SearchByManufacturer(self, request):
+        """
+    Args:
+        param_init: request.manufacturer
+        returns: returns a list of the cars corresponding to the manufacturer
+        
+        """
+        car_data = get_car_by_manufacturer(request.manufacturer)
+        if car_data is None:
+            raise NotFound("car not found")
+        return CarDataList(cars=car_data)
+    def SearchByCondition(self, request):
+        """
+    Args:
+        param_init: request.condition
+        returns: returns a list of the cars corresponding to the condition
+        
+        """
+        car_data = get_car_by_condition(request.condtion)
+        return  CarDataList(cars=car_data)
+    def SearchByYear(self, request):
+        """
+    Args:
+        param_init: request.year
+        returns: returns a list of the cars corresponding to the year
+
+        """
+        car_data = get_car_by_year(request.year)
+        return CarDataList(cars=car_data)
+    def SearchByModel(self, request):
+        """
+    Args:
+        param_init: request.model
+        returns: returns a list of the cars corresponding to the model
+        
+        """
+        car_data = get_car_by_model(request.model)
+        return CarDataList(cars=car_data)
+        
+    def SearchByRegion(self, request):
+        """
+    Args:
+        param_init: request.region
+        returns: returns a list of the cars corresponding to the region
+        
+        """
+        car_data = get_car_by_region(request.region)
+        return CarDataList(cars=car_data)
 
 
 
