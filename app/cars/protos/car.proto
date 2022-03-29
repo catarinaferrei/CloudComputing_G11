@@ -15,7 +15,6 @@ message CarRequest {
 }
 
 
-
 message CarDataResponse {
     CarData cars = 1;
 }

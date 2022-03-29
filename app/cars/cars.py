@@ -9,17 +9,43 @@ from config import db
 from car_pb2 import (
     CarRequest,
     CarDataResponse,
+    CarData
 )
 import car_pb2_grpc
 
-def get_car_list(id):
- car_list = db.session.query(Car).filter_by(carid=id).first()
- if car_list is not None:
-    del car_list.__dict__['_sa_instance_state']
-    return jsonify(car_list.__dict__)
+def get_car_by_id(id):
+ car = db.session.query(Car).filter_by(carid=id).first()
+ if car is not None:
+    del car.__dict__['_sa_instance_state']
+    #print(type(jsonify(car_list.__dict__)))
+    return car_to_proto(car)
  else:
-    abort(409, f'User preferences dont exist')
+    abort(409, f'Car doesnt exist')
 
+def car_to_proto(result):
+    protocar = CarData (
+        car_id = result.carid,
+        region = result.region,
+        price = result.price ,
+        year = result.year ,
+        manufacturer = result.manufacturer,
+        model = result.model,
+        condition = result.condition
+    )
+    return protocar
+
+def proto_to_car(proto):
+    car = {
+            'carid' : proto.car_id,
+            'region': proto.region,
+            'price' : proto.price,
+            'year' : proto.year,
+            'manufacturer' :proto.manufacturer,
+            'model' : proto.model,
+            'condition' : proto.condition
+    }
+    
+    return car
 
 class CarService(car_pb2_grpc.CarServicer):
     
@@ -29,11 +55,11 @@ class CarService(car_pb2_grpc.CarServicer):
         param_init: gets a car id 
         returns: a car
     """
-        car_data = get_car_list(request.car_id) 
+        car_data = get_car_by_id(request.car_id) 
         if car_data is None:
             raise NotFound("car not found")
 
-        return CarRequest(cars=CarDataResponse)
+        return CarDataResponse(cars=car_data)
 
 
 

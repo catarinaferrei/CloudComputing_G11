@@ -10,12 +10,16 @@ car_channel = grpc.insecure_channel(f"{car_host}:5000")
 car_client = CarStub(car_channel)
 
 class MyTestCase(unittest.TestCase):
-    def test_recommendations(self):
+    def test_car_by_id(self):
         with app.app_context():
             service = CarService()
             request = CarRequest(car_id=1)
             response = service.CarSearch(request)
-            assert len(response.cars) == 1
+            #print(type(response.cars))
+            self.assertEquals(response.cars.car_id, 1)
+            #assert len(response.cars) == 1
+            
+
 
   
 
