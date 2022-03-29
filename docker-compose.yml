@@ -19,14 +19,24 @@ services:
     depends_on:
       - userdb
 
+  #cars:
+    #container_name: cars
+    #image: cars
+    #build: ./app/cars/
+    #ports:
+    #  - "70:70"
+    #environment:
+    #  - FLASK_APP=cars
+
   recommendations:
     container_name: recommendations
     image: recommendations
     build: ./app/recommendations/
     ports:
       - 90:90
-    #environment:
-    #    RECOMMENDATIONS_HOST: users
+    environment:
+      - USER_HOST: user
+      # CARS_HOST: cars
 
 volumes:
   pgdata: {}
