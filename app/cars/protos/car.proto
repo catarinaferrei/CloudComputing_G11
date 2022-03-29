@@ -10,6 +10,10 @@ message  CarData{
     string condition = 7;
 }
 
+message CarDataList{
+    repeated CarData cars = 1;
+}
+
 message CarRequest {
     int32 car_id = 1;
 }
@@ -19,7 +23,38 @@ message CarDataResponse {
     CarData cars = 1;
 }
 
+message SearchByRegionRequest{
+    string region = 1;
+
+}
+
+message SearchByModelRequest{
+    string model = 1;
+
+}
+
+message SearchByManufacturerRequest{
+    string manufacturer = 1;
+
+}
+
+message SearchByYearRequest{
+    string year = 1; 
+
+}
+
+message SearchByConditionRequest{
+    string condition = 1;
+
+}
 
 service Car {
     rpc CarSearch  (CarRequest)  returns (CarDataResponse);
+    rpc SearchById (CarRequest) returns (CarDataList);
+    rpc SearchByManufacturer (SearchByManufacturerRequest) returns (CarDataList);
+    rpc SearchByCondition (SearchByConditionRequest) returns (CarDataList);
+    rpc SearchByYear (SearchByYearRequest) returns (CarDataList);
+    rpc SearchByModel (SearchByModelRequest) returns (CarDataList);
+    rpc SearchByRegion (SearchByRegionRequest) returns (CarDataList);
+
 }

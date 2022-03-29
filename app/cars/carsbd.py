@@ -30,6 +30,10 @@ class Car(db.Model):
         self.transmission = transmission
         self.posting_date = posting_date
 
+
+
+
+
 @app.route('/cars/<id>', methods=['GET'])
 def get_car(id):
   user = Car.query.get(id)
