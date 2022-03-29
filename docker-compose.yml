@@ -7,23 +7,24 @@ services:
     ports:
       - "5432:5432"
 
-  user_grpc:
-    container_name: user_grpc
-    image: user_grpc
-    build: ./app/user/grpc_service
-
   user:
     container_name: user
     image: user
     build: ./app/user/flask
     ports:
-      - "80:80"
+      - "81:81"
     environment:
       - DATABASE_URL=postgresql://postgres:password@userdb:5432/usermanagement
       - FLASK_APP=user
     depends_on:
       - userdb
-
+  
+  user_grpc:
+    container_name: user_grpc
+    image: user_grpc
+    build: ./app/user/grpc_service
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@userdb:5432/usermanagement
 
 volumes:
   pgdata: {}

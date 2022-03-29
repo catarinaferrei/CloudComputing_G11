@@ -2,10 +2,6 @@ from flask import Flask,request,jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-import sys
-
-sys.path.insert(0,'../')
-
 from models import Users,UserPreferences
 from config import db,app
 
@@ -67,15 +63,6 @@ def delete_user(id):
     return "user deleted"
   else: 
     abort(409, f'User doesnt exist')
-
-def get_user_preferences(id):
-  user_preferences = db.session.query(UserPreferences).filter_by(user_id=id).first()
-  if user_preferences is not None:
-    del user_preferences.__dict__['_sa_instance_state']
-    return jsonify(user_preferences.__dict__)
-  else:
-    abort(409, f'User preferences dont exist')
-
 
 def createUser(body):
   name = body['name']

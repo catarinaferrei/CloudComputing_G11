@@ -10,11 +10,13 @@ from user_pb2 import (
 )
 import user_pb2_grpc
 
-import sys
-  
-sys.path.insert(0, '../flask')
 
-from user import get_user_preferences
+from config import Session,UserPreferences
+
+def get_user_preferences(id):
+  user_preferences = Session.query(UserPreferences).filter_by(user_id=id).first()
+  if user_preferences is not None:
+      return user_preferences 
 
 class UserService(user_pb2_grpc.UsersServicer):
     def Preferences(self, request, context):
