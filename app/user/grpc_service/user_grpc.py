@@ -10,38 +10,15 @@ from user_pb2 import (
 )
 import user_pb2_grpc
 
-
-from config import Session,UserPreferences
-
-def get_user_preferences(id):
-  user_preferences = Session.query(UserPreferences).filter_by(user_id=id).first()
-  if user_preferences is not None:
-      return user_preferences 
-
 class UserService(user_pb2_grpc.UsersServicer):
     def Preferences(self, request, context):
       print('hello')
-      user_preferences = get_user_preferences(request.user_id) 
-      if user_preferences is None:
-        raise NotFound("User not found")
+      #user_preferences = get_user_preferences(request.user_id) 
+      #if user_preferences is None:
+      #  raise NotFound("User not found")
 
-      return UserPreferencesResponse(userpreferences_to_proto(user_preferences))
-
-def userpreferences_to_proto(preferences):
-    userpreferences = UserPreferences(
-        id = userpreferences.preferences_id,
-        region = "usa",
-        price = userpreferences.max_price,
-        year = userpreferences.year,
-        manufacturer = userpreferences.manufacturer,
-        model = userpreferences.model,
-        condition = "",
-        fuel = userpreferences.fuel,
-        transmission = userpreferences.transmission,
-        posting_date = ""
-    )
-    
-    return userpreferences
+      userpref = UserPreferences(id = request.user_id,color = "color",max_price = 10,year = 12,manufacturer ="manufacturer",fuel = "fuel",transmission ="transmission")
+      return UserPreferencesResponse(preferences=userpref)
 
 def serve():
     interceptors = [ExceptionToStatusInterceptor()]

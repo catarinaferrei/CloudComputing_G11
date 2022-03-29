@@ -9,7 +9,7 @@ engine = create_engine(url=os.environ.get('DATABASE_URL'))
 Session = sessionmaker()
 Session.configure(bind=engine)
 
-class UserPreferences(Base):
+class User_Preferences(Base):
     __tablename__ = 'user_preferences'
     preferences_id = Column(Integer, primary_key=True)
     user_id = Column(Integer,unique=True,nullable=False)
