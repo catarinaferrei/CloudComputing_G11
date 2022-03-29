@@ -6,15 +6,12 @@ message UserRequest {
 
 message UserPreferences {
     int32 id = 1;
-    string region = 2;
-    string price = 3;
-    string year = 4;
-    string manufacturer = 5;
-    string model = 6;
-    string condition = 7;
-    string fuel = 8;
-    string transmission = 9;
-    string posting_date = 10;
+    string color = 2;
+    string fuel = 3;
+    string transmission = 4;
+    string max_price = 5;
+    string year = 6;
+    string manufacter = 7;
 }
 
 message UserPreferencesResponse {
