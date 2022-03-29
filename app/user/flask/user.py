@@ -1,17 +1,11 @@
 from flask import Flask,request,jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
-from concurrent import futures
-import grpc
-from grpc_interceptor import ExceptionToStatusInterceptor
-from grpc_interceptor.exceptions import NotFound
 
-from user_pb2 import (
-    UserRequest,
-    UserPreferences,
-    UserPreferencesResponse,
-)
-import user_pb2_grpc
+import sys
+
+sys.path.insert(0,'../')
+
 from models import Users,UserPreferences
 from config import db,app
 
@@ -100,29 +94,5 @@ def createUserPreferences(user_id,body):
         
   return UserPreferences(user_id,color,transmission,max_price,year,manufacturer,fuel)
 
-class UserService(user_pb2_grpc.UsersServicer):
-    def Preferences(self, request, context):
-      user_preferences = get_user_preferences(request.user_id) 
-      if user_preferences is None:
-        raise NotFound("User not found")
-
-      return UserPreferencesResponse(preferences=user_preferences)
-
-def serve():
-    interceptors = [ExceptionToStatusInterceptor()]
-    server = grpc.server(
-        futures.ThreadPoolExecutor(max_workers=10), interceptors=interceptors
-    )
-    user_pb2_grpc.add_UsersServicer_to_server(
-        UserService(), server
-    )
-
-    server.add_insecure_port("[::]:5001")
-    server.start()
-    print("Car_Repair_Service running on Port:")
-    server.wait_for_termination()
-
-
 if __name__ == "__main__":
-  #app.run()
-  serve()
+  app.run()
