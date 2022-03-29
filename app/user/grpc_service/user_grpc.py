@@ -10,14 +10,30 @@ from user_pb2 import (
 )
 import user_pb2_grpc
 
+from config import Session,User_Preferences
+
+session = Session()
+
+def get_user_preferences(id):
+  user_preferences = session.query(User_Preferences).filter_by(user_id=id).first()
+  if user_preferences is not None:
+      return user_preferences 
+
 class UserService(user_pb2_grpc.UsersServicer):
     def Preferences(self, request, context):
-      print('hello')
-      #user_preferences = get_user_preferences(request.user_id) 
-      #if user_preferences is None:
-      #  raise NotFound("User not found")
+      user_preferences = get_user_preferences(request.user_id) 
+      if user_preferences is None:
+        raise NotFound("User not found")
 
-      userpref = UserPreferences(id = request.user_id,color = "color",max_price = 10,year = 12,manufacturer ="manufacturer",fuel = "fuel",transmission ="transmission")
+      userpref = UserPreferences(
+        id = user_preferences.preferences_id,
+        color = user_preferences.color,
+        fuel = user_preferences.fuel,
+        transmission = user_preferences.transmission,
+        manufacturer = user_preferences.manufacturer,
+        year = user_preferences.year,
+        max_price = user_preferences.max_price)
+
       return UserPreferencesResponse(preferences=userpref)
 
 def serve():
