@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-message  CarData{
+message  CarRequest{
     int32 car_id = 1;
     string region = 2;
     int32 price = 3;
@@ -10,51 +10,59 @@ message  CarData{
     string condition = 7;
 }
 
+// responds a list of cars
 message CarDataList{
-    repeated CarData cars = 1;
+    repeated CarRequest cars = 1;
 }
 
-message CarRequest {
+
+message CarRequestID {
     int32 car_id = 1;
 }
 
-
 message CarDataResponse {
-    CarData cars = 1;
+    CarRequest cars = 1;
 }
 
+// Message used to search for car by region
 message SearchByRegionRequest{
     string region = 1;
 
 }
 
+// Message used to search for car by model
 message SearchByModelRequest{
     string model = 1;
 
 }
 
+// Message used to search for car by manufacturer
 message SearchByManufacturerRequest{
     string manufacturer = 1;
 
 }
 
+// Message used to search for car by year
 message SearchByYearRequest{
     string year = 1; 
 
 }
 
+// Message used to search for car by condition
 message SearchByConditionRequest{
     string condition = 1;
 
 }
 
 service Car {
-    rpc CarSearch  (CarRequest)  returns (CarDataResponse);
-    rpc SearchById (CarRequest) returns (CarDataList);
+    rpc CarSearch  (CarRequestID)  returns (CarDataResponse);
+    rpc GetCarData (CarRequest) returns (CarDataList);
+    rpc SearchById (CarRequestID) returns (CarDataList);
     rpc SearchByManufacturer (SearchByManufacturerRequest) returns (CarDataList);
     rpc SearchByCondition (SearchByConditionRequest) returns (CarDataList);
     rpc SearchByYear (SearchByYearRequest) returns (CarDataList);
     rpc SearchByModel (SearchByModelRequest) returns (CarDataList);
     rpc SearchByRegion (SearchByRegionRequest) returns (CarDataList);
+
 
 }

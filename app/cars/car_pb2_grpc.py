@@ -16,12 +16,17 @@ class CarStub(object):
         """
         self.CarSearch = channel.unary_unary(
                 '/Car/CarSearch',
-                request_serializer=car__pb2.CarRequest.SerializeToString,
+                request_serializer=car__pb2.CarRequestID.SerializeToString,
                 response_deserializer=car__pb2.CarDataResponse.FromString,
+                )
+        self.GetCarData = channel.unary_unary(
+                '/Car/GetCarData',
+                request_serializer=car__pb2.CarRequest.SerializeToString,
+                response_deserializer=car__pb2.CarDataList.FromString,
                 )
         self.SearchById = channel.unary_unary(
                 '/Car/SearchById',
-                request_serializer=car__pb2.CarRequest.SerializeToString,
+                request_serializer=car__pb2.CarRequestID.SerializeToString,
                 response_deserializer=car__pb2.CarDataList.FromString,
                 )
         self.SearchByManufacturer = channel.unary_unary(
@@ -55,6 +60,12 @@ class CarServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def CarSearch(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetCarData(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -101,12 +112,17 @@ def add_CarServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'CarSearch': grpc.unary_unary_rpc_method_handler(
                     servicer.CarSearch,
-                    request_deserializer=car__pb2.CarRequest.FromString,
+                    request_deserializer=car__pb2.CarRequestID.FromString,
                     response_serializer=car__pb2.CarDataResponse.SerializeToString,
+            ),
+            'GetCarData': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetCarData,
+                    request_deserializer=car__pb2.CarRequest.FromString,
+                    response_serializer=car__pb2.CarDataList.SerializeToString,
             ),
             'SearchById': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchById,
-                    request_deserializer=car__pb2.CarRequest.FromString,
+                    request_deserializer=car__pb2.CarRequestID.FromString,
                     response_serializer=car__pb2.CarDataList.SerializeToString,
             ),
             'SearchByManufacturer': grpc.unary_unary_rpc_method_handler(
@@ -156,8 +172,25 @@ class Car(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Car/CarSearch',
-            car__pb2.CarRequest.SerializeToString,
+            car__pb2.CarRequestID.SerializeToString,
             car__pb2.CarDataResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetCarData(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Car/GetCarData',
+            car__pb2.CarRequest.SerializeToString,
+            car__pb2.CarDataList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -173,7 +206,7 @@ class Car(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Car/SearchById',
-            car__pb2.CarRequest.SerializeToString,
+            car__pb2.CarRequestID.SerializeToString,
             car__pb2.CarDataList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

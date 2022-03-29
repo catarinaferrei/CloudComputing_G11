@@ -14,25 +14,25 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\tcar.proto\"~\n\x07\x43\x61rData\x12\x0e\n\x06\x63\x61r_id\x18\x01 \x01(\x05\x12\x0e\n\x06region\x18\x02 \x01(\t\x12\r\n\x05price\x18\x03 \x01(\x05\x12\x0c\n\x04year\x18\x04 \x01(\t\x12\x14\n\x0cmanufacturer\x18\x05 \x01(\t\x12\r\n\x05model\x18\x06 \x01(\t\x12\x11\n\tcondition\x18\x07 \x01(\t\"%\n\x0b\x43\x61rDataList\x12\x16\n\x04\x63\x61rs\x18\x01 \x03(\x0b\x32\x08.CarData\"\x1c\n\nCarRequest\x12\x0e\n\x06\x63\x61r_id\x18\x01 \x01(\x05\")\n\x0f\x43\x61rDataResponse\x12\x16\n\x04\x63\x61rs\x18\x01 \x01(\x0b\x32\x08.CarData\"\'\n\x15SearchByRegionRequest\x12\x0e\n\x06region\x18\x01 \x01(\t\"%\n\x14SearchByModelRequest\x12\r\n\x05model\x18\x01 \x01(\t\"3\n\x1bSearchByManufacturerRequest\x12\x14\n\x0cmanufacturer\x18\x01 \x01(\t\"#\n\x13SearchByYearRequest\x12\x0c\n\x04year\x18\x01 \x01(\t\"-\n\x18SearchByConditionRequest\x12\x11\n\tcondition\x18\x01 \x01(\t2\xfe\x02\n\x03\x43\x61r\x12*\n\tCarSearch\x12\x0b.CarRequest\x1a\x10.CarDataResponse\x12\'\n\nSearchById\x12\x0b.CarRequest\x1a\x0c.CarDataList\x12\x42\n\x14SearchByManufacturer\x12\x1c.SearchByManufacturerRequest\x1a\x0c.CarDataList\x12<\n\x11SearchByCondition\x12\x19.SearchByConditionRequest\x1a\x0c.CarDataList\x12\x32\n\x0cSearchByYear\x12\x14.SearchByYearRequest\x1a\x0c.CarDataList\x12\x34\n\rSearchByModel\x12\x15.SearchByModelRequest\x1a\x0c.CarDataList\x12\x36\n\x0eSearchByRegion\x12\x16.SearchByRegionRequest\x1a\x0c.CarDataListb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\tcar.proto\"\x81\x01\n\nCarRequest\x12\x0e\n\x06\x63\x61r_id\x18\x01 \x01(\x05\x12\x0e\n\x06region\x18\x02 \x01(\t\x12\r\n\x05price\x18\x03 \x01(\x05\x12\x0c\n\x04year\x18\x04 \x01(\t\x12\x14\n\x0cmanufacturer\x18\x05 \x01(\t\x12\r\n\x05model\x18\x06 \x01(\t\x12\x11\n\tcondition\x18\x07 \x01(\t\"(\n\x0b\x43\x61rDataList\x12\x19\n\x04\x63\x61rs\x18\x01 \x03(\x0b\x32\x0b.CarRequest\"\x1e\n\x0c\x43\x61rRequestID\x12\x0e\n\x06\x63\x61r_id\x18\x01 \x01(\x05\",\n\x0f\x43\x61rDataResponse\x12\x19\n\x04\x63\x61rs\x18\x01 \x01(\x0b\x32\x0b.CarRequest\"\'\n\x15SearchByRegionRequest\x12\x0e\n\x06region\x18\x01 \x01(\t\"%\n\x14SearchByModelRequest\x12\r\n\x05model\x18\x01 \x01(\t\"3\n\x1bSearchByManufacturerRequest\x12\x14\n\x0cmanufacturer\x18\x01 \x01(\t\"#\n\x13SearchByYearRequest\x12\x0c\n\x04year\x18\x01 \x01(\t\"-\n\x18SearchByConditionRequest\x12\x11\n\tcondition\x18\x01 \x01(\t2\xab\x03\n\x03\x43\x61r\x12,\n\tCarSearch\x12\r.CarRequestID\x1a\x10.CarDataResponse\x12\'\n\nGetCarData\x12\x0b.CarRequest\x1a\x0c.CarDataList\x12)\n\nSearchById\x12\r.CarRequestID\x1a\x0c.CarDataList\x12\x42\n\x14SearchByManufacturer\x12\x1c.SearchByManufacturerRequest\x1a\x0c.CarDataList\x12<\n\x11SearchByCondition\x12\x19.SearchByConditionRequest\x1a\x0c.CarDataList\x12\x32\n\x0cSearchByYear\x12\x14.SearchByYearRequest\x1a\x0c.CarDataList\x12\x34\n\rSearchByModel\x12\x15.SearchByModelRequest\x1a\x0c.CarDataList\x12\x36\n\x0eSearchByRegion\x12\x16.SearchByRegionRequest\x1a\x0c.CarDataListb\x06proto3')
 
 
 
-_CARDATA = DESCRIPTOR.message_types_by_name['CarData']
-_CARDATALIST = DESCRIPTOR.message_types_by_name['CarDataList']
 _CARREQUEST = DESCRIPTOR.message_types_by_name['CarRequest']
+_CARDATALIST = DESCRIPTOR.message_types_by_name['CarDataList']
+_CARREQUESTID = DESCRIPTOR.message_types_by_name['CarRequestID']
 _CARDATARESPONSE = DESCRIPTOR.message_types_by_name['CarDataResponse']
 _SEARCHBYREGIONREQUEST = DESCRIPTOR.message_types_by_name['SearchByRegionRequest']
 _SEARCHBYMODELREQUEST = DESCRIPTOR.message_types_by_name['SearchByModelRequest']
 _SEARCHBYMANUFACTURERREQUEST = DESCRIPTOR.message_types_by_name['SearchByManufacturerRequest']
 _SEARCHBYYEARREQUEST = DESCRIPTOR.message_types_by_name['SearchByYearRequest']
 _SEARCHBYCONDITIONREQUEST = DESCRIPTOR.message_types_by_name['SearchByConditionRequest']
-CarData = _reflection.GeneratedProtocolMessageType('CarData', (_message.Message,), {
-  'DESCRIPTOR' : _CARDATA,
+CarRequest = _reflection.GeneratedProtocolMessageType('CarRequest', (_message.Message,), {
+  'DESCRIPTOR' : _CARREQUEST,
   '__module__' : 'car_pb2'
-  # @@protoc_insertion_point(class_scope:CarData)
+  # @@protoc_insertion_point(class_scope:CarRequest)
   })
-_sym_db.RegisterMessage(CarData)
+_sym_db.RegisterMessage(CarRequest)
 
 CarDataList = _reflection.GeneratedProtocolMessageType('CarDataList', (_message.Message,), {
   'DESCRIPTOR' : _CARDATALIST,
@@ -41,12 +41,12 @@ CarDataList = _reflection.GeneratedProtocolMessageType('CarDataList', (_message.
   })
 _sym_db.RegisterMessage(CarDataList)
 
-CarRequest = _reflection.GeneratedProtocolMessageType('CarRequest', (_message.Message,), {
-  'DESCRIPTOR' : _CARREQUEST,
+CarRequestID = _reflection.GeneratedProtocolMessageType('CarRequestID', (_message.Message,), {
+  'DESCRIPTOR' : _CARREQUESTID,
   '__module__' : 'car_pb2'
-  # @@protoc_insertion_point(class_scope:CarRequest)
+  # @@protoc_insertion_point(class_scope:CarRequestID)
   })
-_sym_db.RegisterMessage(CarRequest)
+_sym_db.RegisterMessage(CarRequestID)
 
 CarDataResponse = _reflection.GeneratedProtocolMessageType('CarDataResponse', (_message.Message,), {
   'DESCRIPTOR' : _CARDATARESPONSE,
@@ -94,24 +94,24 @@ _CAR = DESCRIPTOR.services_by_name['Car']
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _CARDATA._serialized_start=13
-  _CARDATA._serialized_end=139
-  _CARDATALIST._serialized_start=141
-  _CARDATALIST._serialized_end=178
-  _CARREQUEST._serialized_start=180
-  _CARREQUEST._serialized_end=208
-  _CARDATARESPONSE._serialized_start=210
-  _CARDATARESPONSE._serialized_end=251
-  _SEARCHBYREGIONREQUEST._serialized_start=253
-  _SEARCHBYREGIONREQUEST._serialized_end=292
-  _SEARCHBYMODELREQUEST._serialized_start=294
-  _SEARCHBYMODELREQUEST._serialized_end=331
-  _SEARCHBYMANUFACTURERREQUEST._serialized_start=333
-  _SEARCHBYMANUFACTURERREQUEST._serialized_end=384
-  _SEARCHBYYEARREQUEST._serialized_start=386
-  _SEARCHBYYEARREQUEST._serialized_end=421
-  _SEARCHBYCONDITIONREQUEST._serialized_start=423
-  _SEARCHBYCONDITIONREQUEST._serialized_end=468
-  _CAR._serialized_start=471
-  _CAR._serialized_end=853
+  _CARREQUEST._serialized_start=14
+  _CARREQUEST._serialized_end=143
+  _CARDATALIST._serialized_start=145
+  _CARDATALIST._serialized_end=185
+  _CARREQUESTID._serialized_start=187
+  _CARREQUESTID._serialized_end=217
+  _CARDATARESPONSE._serialized_start=219
+  _CARDATARESPONSE._serialized_end=263
+  _SEARCHBYREGIONREQUEST._serialized_start=265
+  _SEARCHBYREGIONREQUEST._serialized_end=304
+  _SEARCHBYMODELREQUEST._serialized_start=306
+  _SEARCHBYMODELREQUEST._serialized_end=343
+  _SEARCHBYMANUFACTURERREQUEST._serialized_start=345
+  _SEARCHBYMANUFACTURERREQUEST._serialized_end=396
+  _SEARCHBYYEARREQUEST._serialized_start=398
+  _SEARCHBYYEARREQUEST._serialized_end=433
+  _SEARCHBYCONDITIONREQUEST._serialized_start=435
+  _SEARCHBYCONDITIONREQUEST._serialized_end=480
+  _CAR._serialized_start=483
+  _CAR._serialized_end=910
 # @@protoc_insertion_point(module_scope)
