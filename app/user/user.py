@@ -1,7 +1,7 @@
 from flask import Flask,request,jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
-
+from concurrent import futures
 import grpc
 from grpc_interceptor import ExceptionToStatusInterceptor
 from grpc_interceptor.exceptions import NotFound
@@ -32,13 +32,14 @@ def get_users():
 @app.route('/users', methods=['POST'])
 def create_user():
   body = request.get_json()
-  existingUser = db.session.query(UserPreferences).filter_by(email=body['email']).one_or_none()
+  existingUser = db.session.query(Users).filter_by(email=body['email']).one_or_none()
 
   if existingUser is None:
-    db.session.add(createUser(body))
-    session.flush()
+    user = createUser(body)
+    db.session.add(user)
+    db.session.flush()
 
-    userPreferences = createUserPreferences(user_id,body)
+    userPreferences = createUserPreferences(user.user_id,body)
 
     db.session.add(userPreferences)
     db.session.commit()    
@@ -50,13 +51,11 @@ def create_user():
 def update_user(id):
   body = request.get_json()
 
-  existingUser = db.session.query(UserPreferences).filter_by(user_id=id).one_or_none()
+  existingUser = db.session.query(Users).filter_by(user_id=id).one_or_none()
 
   if existingUser is not None:
-    db.session.query(Users).filter_by(id=id).update(
-    dict(createUser(body))
-    db.session.query(UserPreferences).filter_by(user_id=id).update(
-    dict(createUserPreferences(body))
+    db.session.query(Users).filter_by(id=id).update(dict(createUser(body)))
+    db.session.query(UserPreferences).filter_by(user_id=id).update(dict(createUserPreferences(body)))
     db.session.commit()
     return "user updated"
   else:
@@ -65,7 +64,7 @@ def update_user(id):
 
 @app.route('/users/<id>', methods=['DELETE'])
 def delete_user(id):
-  existingUser = db.session.query(UserPreferences).filter_by(user_id=body[id]).one_or_none()
+  existingUser = db.session.query(Users).filter_by(user_id=body[id]).one_or_none()
 
   if existingUser is not None:
     db.session.query(UserPreferences).filter_by(user_id=id).delete()
@@ -92,13 +91,14 @@ def createUser(body):
   return Users(name,email,password)
 
 def createUserPreferences(user_id,body):
-  color = body['Preferences.color']
-  transmission = body['Preferences.transmission']
-  max_price = body['Preferences.max_price']
-  year = body['Preferences.year']
-  manufacturer = body['Preferences.manufacturer']
+  color = body['Preferences']['color']
+  transmission = body['Preferences']['transmission']
+  max_price = body['Preferences']['max_price']
+  year = body['Preferences']['year']
+  manufacturer = body['Preferences']['manufacturer']
+  fuel = body['Preferences']['fuel']
         
-  return UserPreferences(user_id,color,transmission,max_price,year,manufacturer)
+  return UserPreferences(user_id,color,transmission,max_price,year,manufacturer,fuel)
 
 class UserService(user_pb2_grpc.UsersServicer):
     def Preferences(self, request, context):
@@ -117,11 +117,12 @@ def serve():
         UserService(), server
     )
 
-    server.add_insecure_port("[::]:50055")
+    server.add_insecure_port("[::]:5001")
     server.start()
+    print("Car_Repair_Service running on Port:")
     server.wait_for_termination()
 
 
-if __name__ == '__main__':
-  app.run()
+if __name__ == "__main__":
+  #app.run()
   serve()
