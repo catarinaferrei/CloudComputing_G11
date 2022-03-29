@@ -1,0 +1,65 @@
+version: '3'
+
+services:
+  userdb:
+    container_name: userdb
+    build: ./app/user/database
+    networks:
+      - micro_services
+    ports:
+      - "5432:5432"
+
+  user:
+    container_name: user
+    image: user
+    build: ./app/user/flask
+    networks:
+      - micro_services
+    ports:
+      - "81:81"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@userdb:5432/usermanagement
+      - FLASK_APP=user
+    depends_on:
+      - userdb
+  
+  user_grpc:
+    container_name: user_grpc
+    image: user_grpc
+    build: ./app/user/grpc_service
+    hostname: usergrpc  
+    networks:
+      - micro_services
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@userdb:5432/usermanagement
+
+  #cars:
+    #container_name: cars
+    #image: cars
+    #build: ./app/cars/
+    #ports:
+    #  - "70:70"
+    #environment:
+    #  - FLASK_APP=cars
+
+  recommendations:
+    container_name: recommendations
+    image: recommendations
+    build: ./app/recommendations/
+    networks:
+      - micro_services
+    ports:
+      - 90:90
+    environment:
+      USER_HOST: usergrpc
+      # CARS_HOST: cars
+
+volumes:
+  pgdata: {}
+
+networks:
+    micro_services:
+        driver: bridge
+        ipam:
+          config:
+            - subnet: 172.2.0.0/16
