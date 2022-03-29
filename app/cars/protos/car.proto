@@ -2,7 +2,7 @@ syntax = "proto3";
 
 message  CarData{
     int32 car_id = 1;
-    optional string region = 2;
+    string region = 2;
     int32 price = 3;
     string year = 4;
     string manufacturer = 5;
@@ -14,14 +14,13 @@ message CarRequest {
     int32 car_id = 1;
 }
 
-message CarIdResponse{
-    int32 car_id = 1;
+
+
+message CarDataResponse {
+    CarData cars = 1;
 }
 
 
-
-
 service Car {
-    rpc CarId   (CarRequest) returns (CarIdResponse);
-    rpc Car  (CarRequest)  returns (CarData);
+    rpc CarSearch  (CarRequest)  returns (CarDataResponse);
 }

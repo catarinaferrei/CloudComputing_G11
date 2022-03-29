@@ -14,28 +14,17 @@ class CarStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.CarId = channel.unary_unary(
-                '/Car/CarId',
+        self.CarSearch = channel.unary_unary(
+                '/Car/CarSearch',
                 request_serializer=car__pb2.CarRequest.SerializeToString,
-                response_deserializer=car__pb2.CarIdResponse.FromString,
-                )
-        self.Car = channel.unary_unary(
-                '/Car/Car',
-                request_serializer=car__pb2.CarRequest.SerializeToString,
-                response_deserializer=car__pb2.CarData.FromString,
+                response_deserializer=car__pb2.CarDataResponse.FromString,
                 )
 
 
 class CarServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def CarId(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def Car(self, request, context):
+    def CarSearch(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -44,15 +33,10 @@ class CarServicer(object):
 
 def add_CarServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'CarId': grpc.unary_unary_rpc_method_handler(
-                    servicer.CarId,
+            'CarSearch': grpc.unary_unary_rpc_method_handler(
+                    servicer.CarSearch,
                     request_deserializer=car__pb2.CarRequest.FromString,
-                    response_serializer=car__pb2.CarIdResponse.SerializeToString,
-            ),
-            'Car': grpc.unary_unary_rpc_method_handler(
-                    servicer.Car,
-                    request_deserializer=car__pb2.CarRequest.FromString,
-                    response_serializer=car__pb2.CarData.SerializeToString,
+                    response_serializer=car__pb2.CarDataResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -65,7 +49,7 @@ class Car(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def CarId(request,
+    def CarSearch(request,
             target,
             options=(),
             channel_credentials=None,
@@ -75,25 +59,8 @@ class Car(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Car/CarId',
+        return grpc.experimental.unary_unary(request, target, '/Car/CarSearch',
             car__pb2.CarRequest.SerializeToString,
-            car__pb2.CarIdResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def Car(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Car/Car',
-            car__pb2.CarRequest.SerializeToString,
-            car__pb2.CarData.FromString,
+            car__pb2.CarDataResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

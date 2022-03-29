@@ -4,26 +4,26 @@ import grpc
 from grpc_interceptor.exceptions import NotFound
 from grpc_interceptor import ExceptionToStatusInterceptor
 from carsbd import Car, app
-from flask import jsonify
+from flask import jsonify, abort
 from config import db
 from car_pb2 import (
     CarRequest,
-    CarData,
-    CarIdResponse
+    CarDataResponse,
 )
 import car_pb2_grpc
 
 def get_car_list(id):
-  car_list = db.session.query(Car).filter_by(car_id=id).first()
-  return jsonify(car_list.__dict__)
+ car_list = db.session.query(Car).filter_by(carid=id).first()
+ if car_list is not None:
+    del car_list.__dict__['_sa_instance_state']
+    return jsonify(car_list.__dict__)
+ else:
+    abort(409, f'User preferences dont exist')
 
-def get_car_id(id):
-  carid = Car.query.get(id)
-  return jsonify(carid.__dict__)
 
 class CarService(car_pb2_grpc.CarServicer):
     
-    def Car(self, request, context):
+    def CarSearch(self, request):
         """
     Args:
         param_init: gets a car id 
@@ -33,21 +33,9 @@ class CarService(car_pb2_grpc.CarServicer):
         if car_data is None:
             raise NotFound("car not found")
 
-        return CarRequest(car=CarData)
+        return CarRequest(cars=CarDataResponse)
 
-    def CarId(self, request, context):
-        """
-    Args:
-        param_init: gets a car id 
-        returns: returns car id
-    """
-        car_data = get_car_id(request.car_id)
-        if car_data is None:
-            raise NotFound("carid not found")
 
-        return CarRequest(car=CarIdResponse)
-    
-    
 
 def serve():
     interceptors = [ExceptionToStatusInterceptor()]
