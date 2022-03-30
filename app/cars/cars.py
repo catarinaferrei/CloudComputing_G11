@@ -1,16 +1,51 @@
 from concurrent import futures
 from distutils.log import debug
+from attr import dataclass
 import grpc
 from grpc_interceptor.exceptions import NotFound
 from grpc_interceptor import ExceptionToStatusInterceptor
-from carsbd import Car, app
-from flask import jsonify, abort
-from config import db
+
+from flask import Flask, jsonify, abort
+#from config import db
 from car_pb2 import (
     CarDataList,
     CarDataResponse,
-    CarRequest)
+    CarRequest,
+    SearchByManufacturerRequest)
 import car_pb2_grpc
+import os
+import connexion
+from flask_sqlalchemy import SQLAlchemy
+
+USERNAME ='postgres'
+PASSWORD ="canada12"
+PUBLIC_IP_ADDRESS ="127.0.0.1"
+DBNAME ="postgres"
+PROJECT_ID ="cnprojext"
+INSTANCE_NAME ="cn-projecto"
+
+
+app = Flask(__name__)
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+
+# Create the Connexion application instance
+connex_app = connexion.App(__name__, specification_dir=basedir)
+#Line 9 uses the basedir variable to create the Connexion app instance and give it the path to the swagger.yml file.
+
+# Get the underlying Flask app instance
+app = connex_app.app
+
+# Configure the SQLAlchemy part of the app instance
+app.config['SQLALCHEMY_ECHO'] = True
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{0}:{1}@{2}/{3}".format(USERNAME, 
+        PASSWORD,
+        PUBLIC_IP_ADDRESS, DBNAME)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+print("---------",type(app))
+# Create the SQLAlchemy db instance
+
 
 def get_car_by_id(id):
  car = db.session.query(Car).filter_by(carid=id).first()
@@ -21,7 +56,7 @@ def get_car_by_id(id):
  else:
     abort(409, f'Car doesnt exist')
 
-def get_car_data(id,region, price, year, manufacturer,model,condition):
+def get_car_data_list(id,region, price, year, manufacturer,model,condition):
     car = []
     query = db.session.query(Car) 
     if id:
@@ -44,9 +79,8 @@ def get_car_data(id,region, price, year, manufacturer,model,condition):
         del data.__dict__['_sa_instance_state']
         car.append(data.__dict__)
 
-    if car is not None:
         #del car.__dict__['_sa_instance_state']
-        return car_to_proto(car)
+        return car
     else:
         abort(409, f'Car doesnt exist')
     
@@ -62,29 +96,30 @@ def get_car_by_id_list(id):
     abort(409, f'Car doesnt exist')
 
 def get_car_by_manufacturer(manufacturer):
- car = db.session.query(Car).filter_by(manufacturer=manufacturer).first()
- if car is not None:
-    del car.__dict__['_sa_instance_state']
+ results = db.session.query(Car).filter_by(manufacturer=manufacturer)
+ if results is not None:
+    #del results.__dict__['_sa_instance_state']
     #print(type(jsonify(car_list.__dict__)))
-    return car_to_proto(car)
+    return car_to_proto(results) 
  else:
     abort(409, f'Manufacturer doesnt exist')
 
 def get_car_by_price(price):
- car = db.session.query(Car).filter_by(price=price)
- if car is not None:
-    del car.__dict__['_sa_instance_state']
+ results = db.session.query(Car).filter_by(price=price)
+ if results is not None:
+    del results.__dict__['_sa_instance_state']
     #print(type(jsonify(car_list.__dict__)))
-    return car_to_proto(car)
+    return [ car_to_proto(car) for car in results ]
  else:
     abort(409, f'Manufacturer doesnt exist')
 
 def get_car_by_model(model):
- car = db.session.query(Car).filter_by(model=model)
- if car is not None:
-    del car.__dict__['_sa_instance_state']
+ results = db.session.query(Car).filter_by(model=model)
+ if results is not None:
+    #del results.__dict__['_sa_instance_state']
     #print(type(jsonify(car_list.__dict__)))
-    return car_to_proto(car)
+
+    return[car_to_proto(car) for car in results] 
  else:
     abort(409, f'Model doesnt exist')
 
@@ -127,6 +162,22 @@ def car_to_proto(result):
         condition = result.condition
     )
     return protocar
+#
+
+
+def car_to_proto(result):
+    protocar = CarRequest (
+        car_id = result.carid,
+        region = result.region,
+        price = result.price ,
+        year = result.year ,
+        manufacturer = result.manufacturer,
+        model = result.model,
+        condition = result.condition
+    )
+    return protocar
+
+
 
 def proto_to_car(proto):
     car = {
@@ -143,20 +194,21 @@ def proto_to_car(proto):
 
 class CarService(car_pb2_grpc.CarServicer):
     
-    def CarSearch(self, request):
+    def SearchByID(self, request):
         """
     Args:
         param_init: gets a car id 
         returns: a car
     """
+        #TODO: Test it and make it work
         car_data = get_car_by_id(request.car_id) 
         if car_data is None:
             raise NotFound("car not found")
 
         return CarDataResponse(cars=car_data)
     
-    def GetCarData(self, request):
-        car_data = get_car_data(request.carid,request.region, request.price, request.year, request.manufacturer,request.model,request.condition)
+    def GetCarDataList(self, request):
+        car_data = get_car_data_list(request.car_id,request.region, request.price, request.year, request.manufacturer,request.model,request.condition)
         if car_data is None:
             raise NotFound("car not found")
 
@@ -168,6 +220,7 @@ class CarService(car_pb2_grpc.CarServicer):
         returns: returns a list of the car corresponding to car_id
         
         """
+         #TODO: Test it and make it work
         car_data = get_car_by_id_list(request.car_id) 
         if car_data is None:
             raise NotFound("car not found")
@@ -180,10 +233,11 @@ class CarService(car_pb2_grpc.CarServicer):
         returns: returns a list of the cars corresponding to the manufacturer
         
         """
+         #TODO: Test it and make it work
         car_data = get_car_by_manufacturer(request.manufacturer)
         if car_data is None:
             raise NotFound("car not found")
-        return CarDataList(cars=car_data)
+        return CarDataResponse(cars=car_data)
     def SearchByCondition(self, request):
         """
     Args:
@@ -191,6 +245,7 @@ class CarService(car_pb2_grpc.CarServicer):
         returns: returns a list of the cars corresponding to the condition
         
         """
+         #TODO: Test it and make it work
         car_data = get_car_by_condition(request.condtion)
         return  CarDataList(cars=car_data)
     def SearchByYear(self, request):
@@ -200,6 +255,7 @@ class CarService(car_pb2_grpc.CarServicer):
         returns: returns a list of the cars corresponding to the year
 
         """
+        #TODO: Test it and make it work
         car_data = get_car_by_year(request.year)
         return CarDataList(cars=car_data)
     def SearchByModel(self, request):
@@ -209,6 +265,7 @@ class CarService(car_pb2_grpc.CarServicer):
         returns: returns a list of the cars corresponding to the model
         
         """
+        #TODO: Test it and make it work
         car_data = get_car_by_model(request.model)
         return CarDataList(cars=car_data)
 
@@ -219,6 +276,7 @@ class CarService(car_pb2_grpc.CarServicer):
         returns: returns a list of the cars corresponding to the region
         
         """
+        #TODO: Test it and make it work
         car_data = get_car_by_region(request.region)
         return CarDataList(cars=car_data)
 
@@ -240,5 +298,8 @@ def serve():
 
 
 if __name__ == "__main__":
+
     app.run(debug=True)
     serve()
+
+from carsbd import db, Car

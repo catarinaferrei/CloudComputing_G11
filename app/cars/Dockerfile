@@ -1,7 +1,9 @@
 FROM python:3.7
-WORKDIR /app
-COPY . /app
-RUN python3 -m pip install -r requirements.txt
-ENTRYPOINT ["cars.py"]
-CMD [ "python3" ]
+WORKDIR /cars
 
+COPY . /cars
+RUN pip install --no-cache-dir -r requirements.txt
+
+EXPOSE 5000
+
+CMD [ "python", "cars.py"]
