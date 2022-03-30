@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  cars:
+    container_name: car
+    image: car
+    build: ./cars
+    networks:
+      - micro_services
+    ports:
+      - 5000:5000
+    environment:
+      CARS_HOST: car

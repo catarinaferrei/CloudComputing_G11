@@ -3,14 +3,47 @@ from distutils.log import debug
 import grpc
 from grpc_interceptor.exceptions import NotFound
 from grpc_interceptor import ExceptionToStatusInterceptor
-from carsbd import Car, app
-from flask import jsonify, abort
-from config import db
+
+from flask import Flask, jsonify, abort
+#from config import db
 from car_pb2 import (
     CarDataList,
     CarDataResponse,
     CarRequest)
 import car_pb2_grpc
+import os
+import connexion
+from flask_sqlalchemy import SQLAlchemy
+
+USERNAME ='postgres'
+PASSWORD ="canada12"
+PUBLIC_IP_ADDRESS ="127.0.0.1"
+DBNAME ="postgres"
+PROJECT_ID ="cnprojext"
+INSTANCE_NAME ="cn-projecto"
+
+
+app = Flask(__name__)
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+
+# Create the Connexion application instance
+connex_app = connexion.App(__name__, specification_dir=basedir)
+#Line 9 uses the basedir variable to create the Connexion app instance and give it the path to the swagger.yml file.
+
+# Get the underlying Flask app instance
+app = connex_app.app
+
+# Configure the SQLAlchemy part of the app instance
+app.config['SQLALCHEMY_ECHO'] = True
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{0}:{1}@{2}/{3}".format(USERNAME, 
+        PASSWORD,
+        PUBLIC_IP_ADDRESS, DBNAME)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+print("---------",type(app))
+# Create the SQLAlchemy db instance
+
 
 def get_car_by_id(id):
  car = db.session.query(Car).filter_by(carid=id).first()
@@ -156,7 +189,7 @@ class CarService(car_pb2_grpc.CarServicer):
         return CarDataResponse(cars=car_data)
     
     def GetCarData(self, request):
-        car_data = get_car_data(request.carid,request.region, request.price, request.year, request.manufacturer,request.model,request.condition)
+        car_data = get_car_data(request.car_id,request.region, request.price, request.year, request.manufacturer,request.model,request.condition)
         if car_data is None:
             raise NotFound("car not found")
 
@@ -240,5 +273,8 @@ def serve():
 
 
 if __name__ == "__main__":
+
     app.run(debug=True)
     serve()
+
+from carsbd import db, Car

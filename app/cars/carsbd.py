@@ -1,7 +1,10 @@
-from config import db
+from cars import  app
 from flask import Flask,request,jsonify
+from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
+db = SQLAlchemy(app) #--> here 
+ 
+#app = Flask(__name__)
 """Module that contains the database for the ms.car and API calls to the web server
 """
 class Car(db.Model):
@@ -29,8 +32,6 @@ class Car(db.Model):
         self.fuel = fuel
         self.transmission = transmission
         self.posting_date = posting_date
-
-
 
 
 
