@@ -13,11 +13,23 @@ class MyTestCase(unittest.TestCase):
     def test_car_by_id(self):
         with app.app_context():
             service = CarService()
-            request = CarRequest(car_id=1)
+            request = CarRequestID(car_id=1)
             response = service.CarSearch(request)
             #print(type(response.cars))
             self.assertEquals(response.cars.car_id, 1)
             #assert len(response.cars) == 1
+    def test_get_car_data(self):
+        with  app.app_context():
+            service = CarService()
+            request = CarRequest(region='NY')
+            response = service.GetCarData(request)
+            self.assertEquals(response.cars.region, 'NY')
+    def test_get_car_by_manufacturer(self):
+        with  app.app_context():
+            service = CarService()
+            request = SearchByManufacturerRequest(manufacturer='Farrell')
+            response = service.SearchByManufacturer(request)
+            self.assertEquals(response.cars.manufacturer, 'Farrell')
             
 
 

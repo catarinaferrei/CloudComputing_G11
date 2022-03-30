@@ -9,18 +9,48 @@ from config import db
 from car_pb2 import (
     CarDataList,
     CarDataResponse,
-    CarData
-)
+    CarRequest)
 import car_pb2_grpc
 
 def get_car_by_id(id):
- car = db.session.query(Car).filter_by(carid=id).limit(1)
+ car = db.session.query(Car).filter_by(carid=id).first()
  if car is not None:
     del car.__dict__['_sa_instance_state']
     #print(type(jsonify(car_list.__dict__)))
     return car_to_proto(car)
  else:
     abort(409, f'Car doesnt exist')
+
+def get_car_data(id,region, price, year, manufacturer,model,condition):
+    car = []
+    query = db.session.query(Car) 
+    if id:
+        query = query.filter(Car.carid==id)
+
+    if region:
+        query = query.filter(Car.region==region)
+    if price: 
+        query = query(Car).filter_by(price=price).first()
+    if year:
+        query = query(Car).filter_by(year=year).first()
+    if manufacturer:
+        query = query(Car).filter_by(manufacturer=manufacturer).first()
+    if model:
+        query = query(Car).filter_by(model=model).first()
+    if condition:
+        query = query(Car).filter_by(condition=condition).first()
+    
+    for data in query.limit(30).all():
+        del data.__dict__['_sa_instance_state']
+        car.append(data.__dict__)
+
+    if car is not None:
+        #del car.__dict__['_sa_instance_state']
+        return car_to_proto(car)
+    else:
+        abort(409, f'Car doesnt exist')
+    
+
 
 def get_car_by_id_list(id):
  car = db.session.query(Car).filter_by(carid=id)
@@ -32,7 +62,7 @@ def get_car_by_id_list(id):
     abort(409, f'Car doesnt exist')
 
 def get_car_by_manufacturer(manufacturer):
- car = db.session.query(Car).filter_by(manufacturer=manufacturer)
+ car = db.session.query(Car).filter_by(manufacturer=manufacturer).first()
  if car is not None:
     del car.__dict__['_sa_instance_state']
     #print(type(jsonify(car_list.__dict__)))
@@ -87,7 +117,7 @@ def get_car_by_year(year):
 
 
 def car_to_proto(result):
-    protocar = CarData (
+    protocar = CarRequest (
         car_id = result.carid,
         region = result.region,
         price = result.price ,
@@ -124,6 +154,13 @@ class CarService(car_pb2_grpc.CarServicer):
             raise NotFound("car not found")
 
         return CarDataResponse(cars=car_data)
+    
+    def GetCarData(self, request):
+        car_data = get_car_data(request.carid,request.region, request.price, request.year, request.manufacturer,request.model,request.condition)
+        if car_data is None:
+            raise NotFound("car not found")
+
+        return CarDataList(cars=car_data)
     def SearchById(self, request):
         """
     Args:
@@ -174,7 +211,7 @@ class CarService(car_pb2_grpc.CarServicer):
         """
         car_data = get_car_by_model(request.model)
         return CarDataList(cars=car_data)
-        
+
     def SearchByRegion(self, request):
         """
     Args:

@@ -1,14 +1,17 @@
 syntax = "proto3";
 
+//message to requesr for car given all its param
 message  CarRequest{
-    int32 car_id = 1;
-    string region = 2;
-    int32 price = 3;
-    string year = 4;
-    string manufacturer = 5;
-    string model = 6;
-    string condition = 7;
+    optional int32 car_id = 1;
+    optional string region = 2;
+    optional int32 price = 3;
+    optional string year = 4;
+    optional string manufacturer = 5;
+    optional string model = 6;
+    optional string condition = 7;
 }
+
+
 
 // responds a list of cars
 message CarDataList{
