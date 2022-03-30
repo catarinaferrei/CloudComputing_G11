@@ -58,9 +58,8 @@ message SearchByConditionRequest{
 }
 
 service Car {
-    rpc CarSearch  (CarRequestID)  returns (CarDataResponse);
-    rpc GetCarData (CarRequest) returns (CarDataList);
-    rpc SearchById (CarRequestID) returns (CarDataList);
+    rpc SearchByID  (CarRequestID)  returns (CarDataResponse);
+    rpc GetCarDataList (CarRequest) returns (CarDataList);
     rpc SearchByManufacturer (SearchByManufacturerRequest) returns (CarDataList);
     rpc SearchByCondition (SearchByConditionRequest) returns (CarDataList);
     rpc SearchByYear (SearchByYearRequest) returns (CarDataList);

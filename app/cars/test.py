@@ -24,12 +24,21 @@ class MyTestCase(unittest.TestCase):
             request = CarRequest(region='NY')
             response = service.GetCarData(request)
             self.assertEquals(response.cars.region, 'NY')
+
     def test_get_car_by_manufacturer(self):
         with  app.app_context():
             service = CarService()
             request = SearchByManufacturerRequest(manufacturer='Farrell')
             response = service.SearchByManufacturer(request)
             self.assertEquals(response.cars.manufacturer, 'Farrell')
+    
+    def test_get_car_by_model(self):
+        with  app.app_context():
+            service = CarService()
+            request = SearchByModelRequest(model='Farrell')
+            response = service.SearchByModel(request)
+            self.assertEquals(response.cars.model, 'Farrell4')
+
             
 
 
