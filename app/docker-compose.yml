@@ -1,0 +1,10 @@
+ version: "3.7"
+ services:
+  car: car
+  image: cars
+  ports:
+   working_dir: app/cars
+
+
+
+
